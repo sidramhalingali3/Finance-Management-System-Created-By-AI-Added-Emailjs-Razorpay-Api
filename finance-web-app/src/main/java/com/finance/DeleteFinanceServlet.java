@@ -22,7 +22,7 @@ public class DeleteFinanceServlet extends HttpServlet {
             return;
         }
         String role = (String) session.getAttribute("role");
-        if (role == null || (!"Admin".equals(role) && !"Collector".equals(role))) {
+        if (role == null || !"Admin".equals(role)) {
             response.sendRedirect("login.jsp");
             return;
         }
@@ -31,8 +31,31 @@ public class DeleteFinanceServlet extends HttpServlet {
         if (idStr != null && !idStr.isEmpty()) {
             try (Connection conn = DBConnection.getConnection()) {
                 int id = Integer.parseInt(idStr);
-                String sql = "DELETE FROM finance WHERE id = ?";
                 
+                // First fetch details to sync loans table if it was an Approved payment
+                String fetchSql = "SELECT amount, username, status FROM finance WHERE id = ?";
+                try (PreparedStatement fetchPst = conn.prepareStatement(fetchSql)) {
+                    fetchPst.setInt(1, id);
+                    try (java.sql.ResultSet rs = fetchPst.executeQuery()) {
+                        if (rs.next()) {
+                            double amt = rs.getDouble("amount");
+                            String user = rs.getString("username");
+                            String status = rs.getString("status");
+                            
+                            if ("Approved".equals(status) || status == null) {
+                                String updateLoanSql = "UPDATE loans SET paid_amount = paid_amount - ?, remaining_amount = remaining_amount + ? WHERE username = ?";
+                                try (PreparedStatement updatePst = conn.prepareStatement(updateLoanSql)) {
+                                    updatePst.setDouble(1, amt);
+                                    updatePst.setDouble(2, amt);
+                                    updatePst.setString(3, user);
+                                    updatePst.executeUpdate();
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                String sql = "DELETE FROM finance WHERE id = ?";
                 try (PreparedStatement pst = conn.prepareStatement(sql)) {
                     pst.setInt(1, id);
                     pst.executeUpdate();
@@ -41,10 +64,6 @@ public class DeleteFinanceServlet extends HttpServlet {
                 e.printStackTrace();
             }
         }
-        if ("Collector".equals(role)) {
-            response.sendRedirect("collector.jsp");
-        } else {
-            response.sendRedirect("admin.jsp");
-        }
+        response.sendRedirect("admin.jsp");
     }
 }

@@ -38,7 +38,9 @@ public class LoginServlet extends HttpServlet {
                             response.sendRedirect("admin.jsp");
                         } else if ("Collector".equals(role)) {
                             response.sendRedirect("collector.jsp");
-                        } else if ("Customer".equals(role)) {
+                        } else if ("Customer".equals(role) || "User".equals(role)) {
+                            // Normalize the role in session to 'Customer' so customer.jsp accepts it
+                            session.setAttribute("role", "Customer");
                             response.sendRedirect("customer.jsp");
                         } else {
                             response.sendRedirect("login.jsp?error=invalid_role");

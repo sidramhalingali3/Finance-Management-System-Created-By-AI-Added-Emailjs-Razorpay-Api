@@ -19,115 +19,80 @@
     <div class="container">
         <div class="header-actions">
             <div>
-                <div class="welcome-text">Welcome back, <%= session.getAttribute("username") %></div>
+                <div class="welcome-text">Welcome back, <%= session.getAttribute("username") %> (Admin)</div>
                 <h2>Admin Dashboard</h2>
             </div>
-            <a href="login.jsp?logout=true" class="btn btn-outline">Logout</a>
+            <div>
+                <a href="users.jsp" class="btn" style="margin-right: 20px; background-color: #6366f1;">View Users</a>
+                <a href="login.jsp?logout=true" class="btn btn-outline">Logout</a>
+            </div>
         </div>
 
         <% 
-            if ("true".equals(request.getParameter("userSuccess"))) {
-                out.println("<div class='alert alert-success'>User added successfully!</div>");
+            if ("true".equals(request.getParameter("success"))) {
+                out.println("<div class='alert alert-success'>Action completed successfully!</div>");
             }
-            if (request.getParameter("userError") != null) {
-                out.println("<div class='alert alert-error'>Failed to add user.</div>");
+            if ("true".equals(request.getParameter("userSuccess"))) {
+                out.println("<div class='alert alert-success'>User created successfully!</div>");
             }
             if ("true".equals(request.getParameter("loanSuccess"))) {
-                out.println("<div class='alert alert-success'>Loan assigned successfully!</div>");
-            }
-            if (request.getParameter("loanError") != null) {
-                out.println("<div class='alert alert-error'>Failed to assign loan.</div>");
+                out.println("<div class='alert alert-success'>Loan added successfully!</div>");
             }
         %>
-
+        
+        <%
+            double totalLoans = 0;
+            double totalCollected = 0;
+            Connection statConn = null;
+            Statement s1 = null;
+            ResultSet r1 = null;
+            Statement s2 = null;
+            ResultSet r2 = null;
+            try {
+                statConn = DBConnection.getConnection();
+                s1 = statConn.createStatement();
+                r1 = s1.executeQuery("SELECT SUM(loan_amount) FROM loans");
+                if (r1.next()) totalLoans = r1.getDouble(1);
+                
+                s2 = statConn.createStatement();
+                r2 = s2.executeQuery("SELECT SUM(amount) FROM finance WHERE status = 'Approved' OR status IS NULL");
+                if (r2.next()) totalCollected = r2.getDouble(1);
+            } catch (Exception e) {
+            } finally {
+                if (r2 != null) try { r2.close(); } catch(Exception e){}
+                if (s2 != null) try { s2.close(); } catch(Exception e){}
+                if (r1 != null) try { r1.close(); } catch(Exception e){}
+                if (s1 != null) try { s1.close(); } catch(Exception e){}
+                if (statConn != null) try { statConn.close(); } catch(Exception e){}
+            }
+        %>
         <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px;">
-            <div class="card" style="flex: 1; min-width: 300px; padding: 20px; background: rgba(255, 255, 255, 0.05); border-radius: 12px;">
-                <h3 style="margin-top: 0;">Add New User</h3>
-                <form action="AddUserServlet" method="post" style="display: flex; flex-direction: column; gap: 15px;">
-                    <input type="text" name="username" placeholder="Username" required style="padding: 10px; border-radius: 6px; border: 1px solid #4b5563; background: #1f2937; color: white;">
-                    <input type="password" name="password" placeholder="Password" required style="padding: 10px; border-radius: 6px; border: 1px solid #4b5563; background: #1f2937; color: white;">
-                    <select name="role" style="padding: 10px; border-radius: 6px; border: 1px solid #4b5563; background: #1f2937; color: white;">
-                        <option value="Collector">Collector</option>
-                        <option value="Customer">Customer</option>
-                    </select>
-                    <button type="submit" class="btn" style="width: 100%;">Add User</button>
-                </form>
-            </div>
-
-            <div class="card" style="flex: 1; min-width: 300px; padding: 20px; background: rgba(255, 255, 255, 0.05); border-radius: 12px;">
-                <h3 style="margin-top: 0;">Provide Loan</h3>
-                <form action="AddLoanServlet" method="post" style="display: flex; flex-direction: column; gap: 15px;">
-                    <input type="text" name="username" placeholder="Customer Username" required style="padding: 10px; border-radius: 6px; border: 1px solid #4b5563; background: #1f2937; color: white;">
-                    <input type="number" name="amount" placeholder="Loan Amount (₹)" required style="padding: 10px; border-radius: 6px; border: 1px solid #4b5563; background: #1f2937; color: white;">
-                    <button type="submit" class="btn" style="width: 100%;">Assign Loan</button>
-                </form>
-            </div>
-            
-            <div class="card" style="flex: 2; min-width: 300px; padding: 20px; background: rgba(255, 255, 255, 0.05); border-radius: 12px; max-height: 400px; overflow-y: auto;">
-                <h3 style="margin-top: 0;">System Users</h3>
-                <div class="table-responsive" style="margin-top: 0; border: none;">
-                    <table style="width: 100%; border-collapse: collapse;">
-                        <thead>
-                            <tr style="text-align: left; border-bottom: 1px solid #374151;">
-                                <th style="padding: 10px;">ID</th>
-                                <th style="padding: 10px;">Username</th>
-                                <th style="padding: 10px;">Role</th>
-                                <th style="padding: 10px;">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <%
-                                Connection uConn = null;
-                                PreparedStatement uPst = null;
-                                ResultSet uRs = null;
-                                try {
-                                    uConn = DBConnection.getConnection();
-                                    String uSql = "SELECT id, username, role FROM users ORDER BY id DESC";
-                                    uPst = uConn.prepareStatement(uSql);
-                                    uRs = uPst.executeQuery();
-                                    while(uRs.next()) {
-                            %>
-                                        <tr style="border-bottom: 1px solid #374151;">
-                                            <td data-label="ID" style="padding: 10px;"><%= uRs.getInt("id") %></td>
-                                            <td data-label="Username" style="padding: 10px;"><%= uRs.getString("username") %></td>
-                                            <td data-label="Role" style="padding: 10px;">
-                                                <span style="padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; background: <%= "Admin".equals(uRs.getString("role")) ? "#3b82f6" : ("Collector".equals(uRs.getString("role")) ? "#8b5cf6" : "#10b981") %>;">
-                                                    <%= uRs.getString("role") %>
-                                                </span>
-                                            </td>
-                                            <td data-label="Action" style="padding: 10px;">
-                                                <% if (!uRs.getString("username").equals(session.getAttribute("username"))) { %>
-                                                    <a href="DeleteUserServlet?id=<%= uRs.getInt("id") %>" style="color: #ef4444; text-decoration: none; font-size: 0.875rem;" onclick="return confirm('Delete this user?');">Delete</a>
-                                                <% } else { %>
-                                                    <span style="color: #6b7280; font-size: 0.875rem;">You</span>
-                                                <% } %>
-                                            </td>
-                                        </tr>
-                            <%
-                                    }
-                                } catch (Exception e) {
-                                    out.println("<tr><td colspan='3'>Error: " + e.getMessage() + "</td></tr>");
-                                } finally {
-                                    if(uRs != null) try { uRs.close(); } catch(Exception e){}
-                                    if(uPst != null) try { uPst.close(); } catch(Exception e){}
-                                    if(uConn != null) try { uConn.close(); } catch(Exception e){}
-                                }
-                            %>
-                        </tbody>
-                    </table>
-                </div>
+            <a href="loans.jsp" class="card" style="flex: 1; padding: 20px; background: rgba(59, 130, 246, 0.1); border-radius: 12px; border-left: 4px solid #3b82f6; text-decoration: none; display: block; transition: transform 0.2s, background 0.2s;" onmouseover="this.style.transform='scale(1.02)'; this.style.background='rgba(59, 130, 246, 0.15)';" onmouseout="this.style.transform='scale(1)'; this.style.background='rgba(59, 130, 246, 0.1)';">
+                <h4 style="margin: 0; color: #9ca3af; font-weight: normal;">Total System Loans <span style="font-size: 0.8rem; color: #3b82f6;">(Click to view details &rarr;)</span></h4>
+                <div style="font-size: 1.5rem; font-weight: bold; margin-top: 5px; color: #f3f4f6;">&#8377;<%= String.format("%,.0f", totalLoans) %></div>
+            </a>
+            <div class="card" style="flex: 1; padding: 20px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; border-left: 4px solid #10b981;">
+                <h4 style="margin: 0; color: #9ca3af; font-weight: normal;">Total Collected (Approved)</h4>
+                <div style="font-size: 1.5rem; font-weight: bold; margin-top: 5px; color: #10b981;">&#8377;<%= String.format("%,.0f", totalCollected) %></div>
             </div>
         </div>
 
-        <h3>Customer Loan Details</h3>
+        <h3>Platform Wide Collections</h3>
         <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
-                        <th>Customer Name</th>
-                        <th>Loan Amount</th>
-                        <th>Paid Amount</th>
-                        <th>Remaining Amount</th>
+                        <th>ID</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Customer</th>
+                        <th>Collected By</th>
+                        <th>Status</th>
+                        <th>Running Paid</th>
+                        <th>Running Balance</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -137,37 +102,45 @@
                         ResultSet rs = null;
                         try {
                             conn = DBConnection.getConnection();
-                            String sql = "SELECT u.username, IFNULL(l.loan_amount, 0) as loan_amount, IFNULL(SUM(f.amount), 0) as paid_amount " +
-                                         "FROM users u " +
-                                         "LEFT JOIN (SELECT username, MAX(loan_amount) as loan_amount FROM loans GROUP BY username) l ON u.username = l.username " +
-                                         "LEFT JOIN finance f ON u.username = f.username " +
-                                         "WHERE u.role = 'Customer' " +
-                                         "GROUP BY u.username, l.loan_amount " +
-                                         "HAVING IFNULL(l.loan_amount, 0) > 0 OR IFNULL(SUM(f.amount), 0) > 0 " +
-                                         "ORDER BY u.username";
+                            String sql = "SELECT id, username, type, amount, description, date, collector, status, current_paid_amount, current_remaining_amount FROM finance ORDER BY status DESC, date DESC";
                             pst = conn.prepareStatement(sql);
                             rs = pst.executeQuery();
                                 
                             boolean hasRecords = false;
                             while (rs.next()) {
                                 hasRecords = true;
-                                double loanAmount = rs.getDouble("loan_amount");
-                                double paidAmount = rs.getDouble("paid_amount");
-                                double remainingAmount = loanAmount - paidAmount;
                     %>
                                     <tr>
-                                        <td data-label="Customer Name"><%= rs.getString("username") %></td>
-                                        <td data-label="Loan Amount" style="font-weight: 500;">&#8377;<%= String.format("%,.0f", loanAmount) %></td>
-                                        <td data-label="Paid Amount" style="color: #10b981; font-weight: 500;">&#8377;<%= String.format("%,.0f", paidAmount) %></td>
-                                        <td data-label="Remaining Amount" style="color: <%= remainingAmount > 0 ? "#ef4444" : "#10b981" %>; font-weight: 500;">&#8377;<%= String.format("%,.0f", remainingAmount) %></td>
+                                        <td data-label="ID"><%= rs.getInt("id") %></td>
+                                        <td data-label="Type"><%= rs.getString("type") %></td>
+                                        <td data-label="Amount" style="color: #10b981; font-weight: 500;">&#8377;<%= String.format("%,.0f", rs.getDouble("amount")) %></td>
+                                        <td data-label="Description"><%= rs.getString("description") %></td>
+                                        <td data-label="Date"><%= rs.getDate("date") %></td>
+                                        <td data-label="Customer"><%= rs.getString("username") %></td>
+                                        <td data-label="Collected By"><%= rs.getString("collector") != null ? rs.getString("collector") : "Self/Unknown" %></td>
+                                        <% 
+                                            String pStatus = rs.getString("status");
+                                            if (pStatus == null) pStatus = "Approved";
+                                            String statusColor = "Pending".equals(pStatus) ? "#f59e0b" : ("Rejected".equals(pStatus) ? "#ef4444" : "#10b981");
+                                        %>
+                                        <td data-label="Status" style="color: <%= statusColor %>; font-weight: bold;"><%= pStatus %></td>
+                                        <td data-label="Running Paid" style="color: #6b7280;">
+                                            <%= (rs.getDouble("current_paid_amount") > 0) ? "&#8377;" + String.format("%,.0f", rs.getDouble("current_paid_amount")) : "-" %>
+                                        </td>
+                                        <td data-label="Running Balance" style="color: #6b7280; font-weight: bold;">
+                                            <%= (rs.getDouble("current_paid_amount") > 0 || rs.getDouble("current_remaining_amount") > 0) ? "&#8377;" + String.format("%,.0f", rs.getDouble("current_remaining_amount")) : "-" %>
+                                        </td>
+                                        <td data-label="Action">
+                                            <a href="DeleteFinanceServlet?id=<%= rs.getInt("id") %>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this record as Admin?');">Delete</a>
+                                        </td>
                                     </tr>
                     <%
                             }
                             if (!hasRecords) {
-                                out.println("<tr><td colspan='4' style='text-align:center;'>No active loans found.</td></tr>");
+                                out.println("<tr><td colspan='9' style='text-align:center;'>No collections found.</td></tr>");
                             }
                         } catch (Exception e) {
-                            out.println("<tr><td colspan='4' style='text-align:center; color:#ef4444;'>Error loading records: " + e.getMessage() + "</td></tr>");
+                            out.println("<tr><td colspan='9' style='text-align:center; color:#ef4444;'>Error loading collections: " + e.getMessage() + "</td></tr>");
                         } finally {
                             if(rs != null) try { rs.close(); } catch(Exception e){}
                             if(pst != null) try { pst.close(); } catch(Exception e){}
