@@ -28,7 +28,11 @@ CREATE TABLE IF NOT EXISTS finance (
     type VARCHAR(20),
     amount DOUBLE,
     description VARCHAR(100),
-    date DATE
+    date DATE,
+    collector VARCHAR(100) DEFAULT 'Self/Unknown',
+    status VARCHAR(20) DEFAULT 'Approved',
+    current_paid_amount DECIMAL(10,2) DEFAULT 0.0,
+    current_remaining_amount DECIMAL(10,2) DEFAULT 0.0
 );
 
 -- Insert sample finance data
@@ -45,5 +49,7 @@ CREATE TABLE IF NOT EXISTS loans (
     id INT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(50),
     loan_amount DOUBLE,
+    paid_amount DECIMAL(10,2) DEFAULT 0.0,
+    remaining_amount DECIMAL(10,2) DEFAULT 0.0,
     date DATE
 );

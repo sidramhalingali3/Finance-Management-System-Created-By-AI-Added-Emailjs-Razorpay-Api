@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- JDBC Database connection settings -->
+        <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://gateway01.ap-southeast-1.prod.aws.tidbcloud.com:4000/Students_DB?sslMode=REQUIRED&amp;enabledTLSProtocols=TLSv1.2,TLSv1.3&amp;createDatabaseIfNotExist=true</property>
+        <property name="connection.username">7WcsGBhBi85qabQ.root</property>
+        <property name="connection.password">hdXG01Kw98EdVpWk</property>
+
+        <!-- SQL dialect -->
+        <property name="dialect">org.hibernate.dialect.MySQL55Dialect</property>
+
+        <!-- Echo all executed SQL to stdout -->
+        <property name="show_sql">true</property>
+
+        <!-- Update the database schema on startup -->
+        <property name="hbm2ddl.auto">update</property>
+
+        <!-- Mapped classes -->
+        <mapping class="com.finance.model.User"/>
+        <mapping class="com.finance.model.Finance"/>
+        <mapping class="com.finance.model.Loan"/>
+    </session-factory>
+</hibernate-configuration>
