@@ -29,8 +29,8 @@ import java.util.UUID;
 @Service
 public class RazorpayService {
 
-    private final String keyId = "rzp_live_TGstpCaaYvxTDr";
-    private final String keySecret = "pjdOzx1E0HJmuelLI5znf20D";
+    private final String keyId = System.getenv("RAZORPAY_KEY_ID") != null ? System.getenv("RAZORPAY_KEY_ID") : "rzp_live_TGstpCaaYvxTDr";
+    private final String keySecret = System.getenv("RAZORPAY_KEY_SECRET") != null ? System.getenv("RAZORPAY_KEY_SECRET") : "pjdOzx1E0HJmuelLI5znf20D";
     private final String currency = "INR";
 
     @Autowired
@@ -171,10 +171,14 @@ public class RazorpayService {
         }
 
         try {
+            String serviceId = System.getenv("EMAILJS_SERVICE_ID") != null ? System.getenv("EMAILJS_SERVICE_ID") : "service_zprsp9e";
+            String templateId = System.getenv("EMAILJS_TEMPLATE_ID") != null ? System.getenv("EMAILJS_TEMPLATE_ID") : "template_5ejof3w";
+            String publicKey = System.getenv("EMAILJS_PUBLIC_KEY") != null ? System.getenv("EMAILJS_PUBLIC_KEY") : "Z6VPeKqIKfSPQWLho";
+
             JSONObject payload = new JSONObject();
-            payload.put("service_id", "service_zprsp9e");
-            payload.put("template_id", "template_5ejof3w");
-            payload.put("user_id", "Z6VPeKqIKfSPQWLho");
+            payload.put("service_id", serviceId);
+            payload.put("template_id", templateId);
+            payload.put("user_id", publicKey);
 
             JSONObject templateParams = new JSONObject();
             String nameVal = (customerName != null && !customerName.trim().isEmpty()) ? customerName : finance.getUsername();

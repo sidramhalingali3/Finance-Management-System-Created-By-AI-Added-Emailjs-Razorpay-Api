@@ -8,4 +8,13 @@ services:
     container_name: finance_management_app
     ports:
       - "8081:8080"
+    environment:
+      - DB_URL=jdbc:mysql://gateway01.ap-southeast-1.prod.aws.tidbcloud.com:4000/Students_DB?sslMode=REQUIRED&enabledTLSProtocols=TLSv1.2,TLSv1.3&createDatabaseIfNotExist=true
+      - DB_USER=7WcsGBhBi85qabQ.root
+      - DB_PASS=hdXG01Kw98EdVpWk
+      - RAZORPAY_KEY_ID=rzp_live_TGstpCaaYvxTDr
+      - RAZORPAY_KEY_SECRET=pjdOzx1E0HJmuelLI5znf20D
+      - EMAILJS_SERVICE_ID=service_zprsp9e
+      - EMAILJS_TEMPLATE_ID=template_5ejof3w
+      - EMAILJS_PUBLIC_KEY=Z6VPeKqIKfSPQWLho
     restart: always
