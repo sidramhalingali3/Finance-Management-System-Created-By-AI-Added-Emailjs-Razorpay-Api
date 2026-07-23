@@ -307,7 +307,7 @@ th, td {
 }
 
 th {
-    padding: 0.85rem 0.8rem;
+    padding: 0.85rem 1rem;
     background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4338ca 100%);
     font-weight: 700;
     color: #ffffff;
@@ -318,14 +318,20 @@ th {
     position: sticky;
     top: 0;
     z-index: 10;
+    white-space: nowrap !important;
 }
 
-td[data-label="Description"], th:nth-child(4) {
+td[data-label="Description"] {
     white-space: normal !important;
-    width: 220px !important;
-    max-width: 220px !important;
-    word-break: break-word !important;
-    overflow-wrap: anywhere !important;
+    min-width: 200px !important;
+    max-width: 320px !important;
+    word-break: normal !important;
+    word-wrap: break-word !important;
+}
+
+th:nth-child(4) {
+    white-space: nowrap !important;
+    min-width: 200px !important;
 }
 
 tr:last-child td {
