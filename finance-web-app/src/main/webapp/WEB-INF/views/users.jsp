@@ -76,16 +76,16 @@ body::after {
 }
 
 .container {
-    width: 98%;
-    max-width: 1600px;
-    margin: 1.5rem auto;
+    width: 92%;
+    max-width: 1280px;
+    margin: 2rem auto;
     background: var(--card-bg);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid var(--border-color);
-    border-radius: 24px;
-    padding: 2rem 1.25rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
+    padding: 1.5rem 1.5rem;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3);
     animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     z-index: 1;
@@ -298,21 +298,21 @@ table {
 }
 
 th, td {
-    padding: 1rem 0.9rem;
-    border-bottom: 1px solid #f1f5f9;
-    transition: all 0.3s ease;
-    font-size: 1.05rem;
+    padding: 0.75rem 0.8rem;
+    border-bottom: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+    font-size: 0.88rem;
     font-weight: 500;
     white-space: nowrap;
 }
 
 th {
-    padding: 1.1rem 0.9rem;
+    padding: 0.85rem 0.8rem;
     background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4338ca 100%);
     font-weight: 700;
     color: #ffffff;
     text-transform: uppercase;
-    font-size: 0.98rem;
+    font-size: 0.82rem;
     letter-spacing: 0.05em;
     border-bottom: none;
     position: sticky;
