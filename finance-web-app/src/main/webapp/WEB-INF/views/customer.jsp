@@ -559,8 +559,8 @@ tbody tr:hover td {
 
         <% if (hasPending) { %>
             <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                <h4 style="color: #f59e0b; margin: 0 0 5px 0;">Pending Verification</h4>
-                <p style="font-size: 0.9rem; margin: 0; color: #ddd;">You have recently submitted a payment that is currently waiting for Collector verification. It will appear in your history below once approved.</p>
+                <h4 style="color: #b45309; margin: 0 0 5px 0;">Pending Verification</h4>
+                <p style="font-size: 0.9rem; margin: 0; color: #78350f;">You have recently submitted a payment that is currently waiting for Collector verification. It will appear in your history below once approved.</p>
             </div>
         <% } %>
 
