@@ -23,5 +23,6 @@
         <mapping class="com.finance.model.User"/>
         <mapping class="com.finance.model.Finance"/>
         <mapping class="com.finance.model.Loan"/>
+        <mapping class="com.finance.model.PaymentOrder"/>
     </session-factory>
 </hibernate-configuration>

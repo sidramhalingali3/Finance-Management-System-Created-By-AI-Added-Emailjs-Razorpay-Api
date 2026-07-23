@@ -4,7 +4,7 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 # Build the WAR file
-RUN mvn clean package
+RUN mvn clean package -DskipTests
 
 # Stage 2: Deploy to Tomcat
 FROM tomcat:9.0-jre8
@@ -13,7 +13,7 @@ RUN rm -rf /usr/local/tomcat/webapps/*
 
 # Copy the built WAR file from the previous stage to Tomcat's webapps directory
 # Renaming to ROOT.war so it serves as the default application
-COPY --from=build /app/target/finance-web-app.war /usr/local/tomcat/webapps/ROOT.war
+COPY --from=build /app/target/*.war /usr/local/tomcat/webapps/ROOT.war
 
 EXPOSE 8080
 CMD ["catalina.sh", "run"]

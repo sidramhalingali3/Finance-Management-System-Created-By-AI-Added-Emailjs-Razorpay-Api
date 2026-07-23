@@ -9,19 +9,19 @@
     <title>System Loans - Finance Management</title>
     
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-    --primary-color: #2563eb;
-    --primary-hover: #1d4ed8;
-    --bg-gradient-1: #f0f9ff;
-    --bg-gradient-2: #e0f2fe;
-    --card-bg: rgba(255, 255, 255, 0.75);
+    --primary-color: #6366f1;
+    --primary-hover: #4f46e5;
+    --bg-gradient-1: #0f172a;
+    --bg-gradient-2: #1e1b4b;
+    --card-bg: rgba(255, 255, 255, 0.96);
     --text-main: #0f172a;
     --text-muted: #475569;
-    --border-color: rgba(255, 255, 255, 0.5);
-    --danger-color: #ef4444;
-    --danger-hover: #dc2626;
+    --border-color: rgba(255, 255, 255, 0.2);
+    --danger-color: #f43f5e;
+    --danger-hover: #e11d48;
     --success-color: #10b981;
 }
 
@@ -29,11 +29,11 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body {
-    background: linear-gradient(135deg, var(--bg-gradient-1), var(--bg-gradient-2));
+    background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0f172a 60%, #020617 100%);
     background-attachment: fixed;
     color: var(--text-main);
     min-height: 100vh;
@@ -76,15 +76,15 @@ body::after {
 }
 
 .container {
-    width: 92%;
-    max-width: 1100px;
-    margin: 3rem auto;
+    width: 98%;
+    max-width: 1600px;
+    margin: 1.5rem auto;
     background: var(--card-bg);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid var(--border-color);
     border-radius: 24px;
-    padding: 3.5rem;
+    padding: 2rem 1.25rem;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
     animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
@@ -298,18 +298,22 @@ table {
 }
 
 th, td {
-    padding: 1.25rem 1.5rem;
+    padding: 1rem 0.9rem;
     border-bottom: 1px solid #f1f5f9;
     transition: all 0.3s ease;
+    font-size: 1.05rem;
+    font-weight: 500;
+    white-space: nowrap;
 }
 
 th {
-    background: linear-gradient(to right, #1e3a8a, #3b82f6);
-    font-weight: 600;
+    padding: 1.1rem 0.9rem;
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4338ca 100%);
+    font-weight: 700;
     color: #ffffff;
     text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 0.08em;
+    font-size: 0.98rem;
+    letter-spacing: 0.05em;
     border-bottom: none;
     position: sticky;
     top: 0;
@@ -484,5 +488,82 @@ tbody tr:hover td {
             </table>
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const pageSize = 5;
+            const tableBody = document.querySelector("table tbody");
+            if (!tableBody) return;
+
+            const rows = Array.from(tableBody.querySelectorAll("tr"));
+            const validRows = rows.filter(r => !r.querySelector("td[colspan]"));
+
+            if (validRows.length <= pageSize) return;
+
+            let currentPage = 1;
+            const totalPages = Math.ceil(validRows.length / pageSize);
+
+            const tableResponsive = document.querySelector(".table-responsive");
+            const pagContainer = document.createElement("div");
+            pagContainer.className = "pagination-container";
+            pagContainer.style.cssText = "display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem; padding: 0.85rem 1.25rem; background: #ffffff; border-radius: 16px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 12px rgba(0,0,0,0.03);";
+
+            pagContainer.innerHTML = `
+                <div id="page-info" style="font-size: 0.9rem; color: #475569; font-weight: 500;"></div>
+                <div id="page-btns" style="display: flex; gap: 6px; align-items: center;"></div>
+            `;
+
+            tableResponsive.after(pagContainer);
+
+            const pageInfo = pagContainer.querySelector("#page-info");
+            const pageBtns = pagContainer.querySelector("#page-btns");
+
+            function renderPage(page) {
+                currentPage = page;
+                const start = (page - 1) * pageSize;
+                const end = start + pageSize;
+
+                validRows.forEach((row, index) => {
+                    if (index >= start && index < end) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+
+                const shownStart = start + 1;
+                const shownEnd = Math.min(end, validRows.length);
+                pageInfo.innerHTML = "Showing <strong>" + shownStart + "</strong> - <strong>" + shownEnd + "</strong> of <strong>" + validRows.length + "</strong> records";
+
+                let btnsHtml = '<button type="button" class="pag-btn prev-btn" ' + (page === 1 ? 'disabled' : '') + ' style="padding: 0.45rem 0.85rem; border-radius: 8px; border: 1px solid #cbd5e1; background: ' + (page === 1 ? '#f1f5f9' : '#fff') + '; cursor: ' + (page === 1 ? 'not-allowed' : 'pointer') + '; font-weight: 600; font-size: 0.85rem; color: ' + (page === 1 ? '#94a3b8' : '#334155') + '; transition: all 0.2s;">&laquo; Prev</button>';
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const isActive = i === page;
+                    btnsHtml += '<button type="button" class="pag-btn num-btn" data-page="' + i + '" style="padding: 0.45rem 0.8rem; border-radius: 8px; border: 1px solid ' + (isActive ? '#2563eb' : '#cbd5e1') + '; background: ' + (isActive ? '#2563eb' : '#fff') + '; color: ' + (isActive ? '#fff' : '#334155') + '; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;">' + i + '</button>';
+                }
+
+                btnsHtml += '<button type="button" class="pag-btn next-btn" ' + (page === totalPages ? 'disabled' : '') + ' style="padding: 0.45rem 0.85rem; border-radius: 8px; border: 1px solid #cbd5e1; background: ' + (page === totalPages ? '#f1f5f9' : '#fff') + '; cursor: ' + (page === totalPages ? 'not-allowed' : 'pointer') + '; font-weight: 600; font-size: 0.85rem; color: ' + (page === totalPages ? '#94a3b8' : '#334155') + '; transition: all 0.2s;">Next &raquo;</button>';
+
+                pageBtns.innerHTML = btnsHtml;
+
+                pageBtns.querySelector(".prev-btn")?.addEventListener("click", () => {
+                    if (currentPage > 1) renderPage(currentPage - 1);
+                });
+
+                pageBtns.querySelector(".next-btn")?.addEventListener("click", () => {
+                    if (currentPage < totalPages) renderPage(currentPage + 1);
+                });
+
+                pageBtns.querySelectorAll(".num-btn").forEach(btn => {
+                    btn.addEventListener("click", function () {
+                        const p = parseInt(this.getAttribute("data-page"));
+                        renderPage(p);
+                    });
+                });
+            }
+
+            renderPage(1);
+        });
+    </script>
 </body>
 </html>

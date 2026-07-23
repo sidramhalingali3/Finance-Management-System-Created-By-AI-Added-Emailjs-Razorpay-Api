@@ -38,7 +38,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<User> findAll() {
         Session session = sf.openSession();
-        List<User> list = session.createQuery("from User", User.class).list();
+        List<User> list = session.createQuery("from User order by id desc", User.class).list();
         session.close();
         return list;
     }

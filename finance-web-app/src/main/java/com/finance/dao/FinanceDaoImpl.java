@@ -57,7 +57,7 @@ public class FinanceDaoImpl implements FinanceDao {
     @Override
     public List<Finance> findAll() {
         Session session = sf.openSession();
-        List<Finance> list = session.createQuery("from Finance", Finance.class).list();
+        List<Finance> list = session.createQuery("from Finance order by id desc", Finance.class).list();
         session.close();
         return list;
     }
@@ -65,7 +65,7 @@ public class FinanceDaoImpl implements FinanceDao {
     @Override
     public List<Finance> findByUsername(String username) {
         Session session = sf.openSession();
-        Query<Finance> query = session.createQuery("from Finance where username=:username", Finance.class);
+        Query<Finance> query = session.createQuery("from Finance where username=:username order by id desc", Finance.class);
         query.setParameter("username", username);
         List<Finance> list = query.list();
         session.close();
@@ -75,7 +75,7 @@ public class FinanceDaoImpl implements FinanceDao {
     @Override
     public List<Finance> findByStatus(String status) {
         Session session = sf.openSession();
-        Query<Finance> query = session.createQuery("from Finance where status=:status", Finance.class);
+        Query<Finance> query = session.createQuery("from Finance where status=:status order by id desc", Finance.class);
         query.setParameter("status", status);
         List<Finance> list = query.list();
         session.close();

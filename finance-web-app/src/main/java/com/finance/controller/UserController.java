@@ -74,6 +74,12 @@ public class UserController {
         return "phonepe_payment";
     }
 
+    @GetMapping("/razorpayPayment")
+    public String showRazorpayPayment(HttpSession session) {
+        if (!"Customer".equals(session.getAttribute("role"))) return "redirect:/login";
+        return "razorpay_payment";
+    }
+
     @GetMapping("/collector")
     public ModelAndView collectorPage(HttpSession session) {
         if (!"Collector".equals(session.getAttribute("role"))) return new ModelAndView("redirect:/login");

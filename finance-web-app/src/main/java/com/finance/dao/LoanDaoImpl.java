@@ -57,7 +57,7 @@ public class LoanDaoImpl implements LoanDao {
     @Override
     public List<Loan> findAll() {
         Session session = sf.openSession();
-        List<Loan> list = session.createQuery("from Loan", Loan.class).list();
+        List<Loan> list = session.createQuery("from Loan order by id desc", Loan.class).list();
         session.close();
         return list;
     }
@@ -65,7 +65,7 @@ public class LoanDaoImpl implements LoanDao {
     @Override
     public List<Loan> findByUsername(String username) {
         Session session = sf.openSession();
-        Query<Loan> query = session.createQuery("from Loan where username=:username", Loan.class);
+        Query<Loan> query = session.createQuery("from Loan where username=:username order by id desc", Loan.class);
         query.setParameter("username", username);
         List<Loan> list = query.list();
         session.close();
