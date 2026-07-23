@@ -496,22 +496,36 @@ body {
                 }
             });
 
-            function openRazorpayCheckout(orderData, name, email, phone) {
+               function openRazorpayCheckout(orderData, name, email, phone) {
+                const validPhone = (phone && phone.trim().length >= 10) ? phone.trim() : "9999999999";
+                const validEmail = (email && email.trim().length > 0) ? email.trim() : "customer@example.com";
+                const validName = (name && name.trim().length > 0) ? name.trim() : "Customer";
+
                 const options = {
                     key: orderData.keyId,
                     amount: orderData.amountInPaise,
                     currency: orderData.currency || "INR",
                     name: "Finance Management System",
-                    description: "Loan Payment for Order " + orderData.orderId,
+                    description: "Loan Payment #" + orderData.orderId,
                     image: "https://razorpay.com/assets/razorpay-glyph.svg",
                     order_id: orderData.orderId,
                     prefill: {
-                        name: name,
-                        email: email,
-                        contact: phone
+                        name: validName,
+                        email: validEmail,
+                        contact: validPhone
                     },
                     theme: {
-                        color: "#2563eb"
+                        color: "#6366f1"
+                    },
+                    retry: {
+                        enabled: true
+                    },
+                    modal: {
+                        handleback: true,
+                        confirm_close: true,
+                        ondismiss: function () {
+                            setLoading(false);
+                        }
                     },
                     handler: async function (response) {
                         // Step 3: Verify Payment Signature & Credit Loan
@@ -520,18 +534,13 @@ body {
                             razorpayPaymentId: response.razorpay_payment_id,
                             razorpaySignature: response.razorpay_signature
                         }, orderData.amountInRupees);
-                    },
-                    modal: {
-                        ondismiss: function () {
-                            setLoading(false);
-                        }
                     }
                 };
 
                 try {
                     const rzp = new Razorpay(options);
                     rzp.on('payment.failed', function (response) {
-                        alert("Payment Failed: " + response.error.description);
+                        alert("Payment Failed: " + (response.error.description || "Transaction declined."));
                         setLoading(false);
                     });
                     rzp.open();
