@@ -403,6 +403,24 @@ tbody tr:hover td {
     box-shadow: 0 2px 6px rgba(22, 163, 74, 0.15);
 }
 
+.badge-success::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #10b981;
+    margin-right: 4px;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    animation: pulseDotGreen 1.8s infinite;
+}
+
+@keyframes pulseDotGreen {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
 .badge-warning {
     background: #fef3c7;
     color: #b45309;
@@ -415,6 +433,17 @@ tbody tr:hover td {
     color: #be123c;
     border: 1px solid #fecdd3;
     box-shadow: 0 2px 6px rgba(225, 29, 72, 0.15);
+}
+
+@keyframes mobileCardEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 @media screen and (max-width: 768px) {
@@ -461,6 +490,11 @@ tbody tr:hover td {
         margin-right: 0 !important;
         margin-bottom: 0.6rem;
     }
+
+    .btn:active {
+        transform: scale(0.96) translateY(0) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+    }
     
     .table-responsive {
         border: none;
@@ -491,6 +525,13 @@ tbody tr:hover td {
         box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.08);
         overflow: hidden;
         width: 100% !important;
+        animation: mobileCardEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1) ease-out;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    tr:active {
+        transform: scale(0.982);
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.15) !important;
     }
     
     td {
