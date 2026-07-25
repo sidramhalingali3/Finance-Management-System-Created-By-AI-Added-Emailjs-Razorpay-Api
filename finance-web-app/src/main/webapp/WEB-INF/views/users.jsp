@@ -488,9 +488,95 @@ tbody tr:hover td {
     }
     
     .pagination-container {
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        justify-content: center;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1.5rem;
+        padding: 1rem 1.25rem;
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    }
+
+    .pagination-info {
+        font-size: 0.9rem;
+        color: #475569;
+        font-weight: 500;
+    }
+
+    .pagination-buttons {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+    }
+
+    .pag-btn {
+        padding: 0.45rem 0.85rem;
+        border-radius: 10px;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #334155;
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .pag-btn:hover:not(:disabled) {
+        background: #f1f5f9;
+        border-color: #94a3b8;
+        color: #0f172a;
+        transform: translateY(-1px);
+    }
+
+    .pag-btn.active {
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        border-color: #2563eb;
+        color: #ffffff;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+    }
+
+    .pag-btn:disabled {
+        background: #f8fafc;
+        border-color: #e2e8f0;
+        color: #94a3b8;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
+    .pag-ellipsis {
+        padding: 0 4px;
+        color: #94a3b8;
+        font-weight: 700;
+    }
+
+    @media screen and (max-width: 768px) {
+        .pagination-container {
+            flex-direction: column !important;
+            align-items: center !important;
+            text-align: center !important;
+            padding: 1rem 0.75rem !important;
+            margin-top: 1rem !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        .pagination-info {
+            font-size: 0.85rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+        .pagination-buttons {
+            justify-content: center !important;
+            width: 100% !important;
+            gap: 4px !important;
+            flex-wrap: wrap !important;
+        }
+        .pag-btn {
+            padding: 0.4rem 0.65rem !important;
+            font-size: 0.8rem !important;
+            border-radius: 8px !important;
+        }
     }
 }
 </style>
@@ -579,11 +665,10 @@ tbody tr:hover td {
             const tableResponsive = document.querySelector(".table-responsive");
             const pagContainer = document.createElement("div");
             pagContainer.className = "pagination-container";
-            pagContainer.style.cssText = "display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem; padding: 0.85rem 1.25rem; background: #ffffff; border-radius: 16px; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 12px rgba(0,0,0,0.03);";
 
             pagContainer.innerHTML = `
-                <div id="page-info" style="font-size: 0.9rem; color: #475569; font-weight: 500;"></div>
-                <div id="page-btns" style="display: flex; gap: 6px; align-items: center;"></div>
+                <div class="pagination-info" id="page-info"></div>
+                <div class="pagination-buttons" id="page-btns"></div>
             `;
 
             tableResponsive.after(pagContainer);
@@ -591,7 +676,22 @@ tbody tr:hover td {
             const pageInfo = pagContainer.querySelector("#page-info");
             const pageBtns = pagContainer.querySelector("#page-btns");
 
-            function renderPage(page) {
+            function getPageWindow(current, total) {
+                if (total <= 5) {
+                    const pages = [];
+                    for (let i = 1; i <= total; i++) pages.push(i);
+                    return pages;
+                }
+                if (current <= 3) {
+                    return [1, 2, 3, '...', total];
+                }
+                if (current >= total - 2) {
+                    return [1, '...', total - 2, total - 1, total];
+                }
+                return [1, '...', current, '...', total];
+            }
+
+            function renderPage(page, shouldScroll) {
                 currentPage = page;
                 const start = (page - 1) * pageSize;
                 const end = start + pageSize;
@@ -608,34 +708,43 @@ tbody tr:hover td {
                 const shownEnd = Math.min(end, validRows.length);
                 pageInfo.innerHTML = "Showing <strong>" + shownStart + "</strong> - <strong>" + shownEnd + "</strong> of <strong>" + validRows.length + "</strong> records";
 
-                let btnsHtml = '<button type="button" class="pag-btn prev-btn" ' + (page === 1 ? 'disabled' : '') + ' style="padding: 0.45rem 0.85rem; border-radius: 8px; border: 1px solid #cbd5e1; background: ' + (page === 1 ? '#f1f5f9' : '#fff') + '; cursor: ' + (page === 1 ? 'not-allowed' : 'pointer') + '; font-weight: 600; font-size: 0.85rem; color: ' + (page === 1 ? '#94a3b8' : '#334155') + '; transition: all 0.2s;">&laquo; Prev</button>';
+                let btnsHtml = '<button type="button" class="pag-btn prev-btn" ' + (page === 1 ? 'disabled' : '') + '>&laquo; Prev</button>';
 
-                for (let i = 1; i <= totalPages; i++) {
-                    const isActive = i === page;
-                    btnsHtml += '<button type="button" class="pag-btn num-btn" data-page="' + i + '" style="padding: 0.45rem 0.8rem; border-radius: 8px; border: 1px solid ' + (isActive ? '#2563eb' : '#cbd5e1') + '; background: ' + (isActive ? '#2563eb' : '#fff') + '; color: ' + (isActive ? '#fff' : '#334155') + '; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;">' + i + '</button>';
-                }
+                const windowPages = getPageWindow(page, totalPages);
+                windowPages.forEach(p => {
+                    if (p === '...') {
+                        btnsHtml += '<span class="pag-ellipsis">&hellip;</span>';
+                    } else {
+                        const isActive = p === page;
+                        btnsHtml += '<button type="button" class="pag-btn num-btn ' + (isActive ? 'active' : '') + '" data-page="' + p + '">' + p + '</button>';
+                    }
+                });
 
-                btnsHtml += '<button type="button" class="pag-btn next-btn" ' + (page === totalPages ? 'disabled' : '') + ' style="padding: 0.45rem 0.85rem; border-radius: 8px; border: 1px solid #cbd5e1; background: ' + (page === totalPages ? '#f1f5f9' : '#fff') + '; cursor: ' + (page === totalPages ? 'not-allowed' : 'pointer') + '; font-weight: 600; font-size: 0.85rem; color: ' + (page === totalPages ? '#94a3b8' : '#334155') + '; transition: all 0.2s;">Next &raquo;</button>';
+                btnsHtml += '<button type="button" class="pag-btn next-btn" ' + (page === totalPages ? 'disabled' : '') + '>Next &raquo;</button>';
 
                 pageBtns.innerHTML = btnsHtml;
 
                 pageBtns.querySelector(".prev-btn")?.addEventListener("click", () => {
-                    if (currentPage > 1) renderPage(currentPage - 1);
+                    if (currentPage > 1) renderPage(currentPage - 1, true);
                 });
 
                 pageBtns.querySelector(".next-btn")?.addEventListener("click", () => {
-                    if (currentPage < totalPages) renderPage(currentPage + 1);
+                    if (currentPage < totalPages) renderPage(currentPage + 1, true);
                 });
 
                 pageBtns.querySelectorAll(".num-btn").forEach(btn => {
                     btn.addEventListener("click", function () {
                         const p = parseInt(this.getAttribute("data-page"));
-                        renderPage(p);
+                        renderPage(p, true);
                     });
                 });
+
+                if (shouldScroll && tableResponsive) {
+                    tableResponsive.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             }
 
-            renderPage(1);
+            renderPage(1, false);
         });
     </script>
 </body>
