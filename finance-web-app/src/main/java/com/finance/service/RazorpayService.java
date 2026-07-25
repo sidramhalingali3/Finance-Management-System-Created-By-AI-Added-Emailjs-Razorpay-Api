@@ -195,7 +195,10 @@ public class RazorpayService {
             templateParams.put("type", finance.getType());
             templateParams.put("amount", "₹" + String.format("%,.0f", finance.getAmount()));
             templateParams.put("description", finance.getDescription());
-            templateParams.put("date", finance.getDate() != null ? finance.getDate().toString() : "");
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd-MM-yyyy hh:mm:ss a");
+            sdf.setTimeZone(java.util.TimeZone.getTimeZone("Asia/Kolkata"));
+            String formattedDate = finance.getDate() != null ? sdf.format(finance.getDate()) : sdf.format(new java.util.Date());
+            templateParams.put("date", formattedDate);
             templateParams.put("collector", finance.getCollector());
             templateParams.put("status", finance.getStatus());
             templateParams.put("current_paid", "₹" + String.format("%,.0f", finance.getCurrentPaidAmount() != null ? finance.getCurrentPaidAmount() : 0.0));

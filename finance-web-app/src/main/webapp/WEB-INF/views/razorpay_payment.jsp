@@ -570,6 +570,14 @@ body {
                         resOrderId.textContent = "Record #" + f.id;
                         resultModal.classList.remove("hidden");
 
+                        let formattedDateStr = "";
+                        if (f.date) {
+                            let d = new Date(typeof f.date === 'number' ? f.date : f.date);
+                            formattedDateStr = isNaN(d.getTime()) ? f.date : d.toLocaleString("en-IN", { timeZone: "Asia/Kolkata", day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true });
+                        } else {
+                            formattedDateStr = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata", day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true });
+                        }
+
                         // Trigger EmailJS Payment Confirmation Email with complete Finance record details
                         sendEmailNotification({
                             name: document.getElementById("customerName").value,
@@ -583,7 +591,7 @@ body {
                             type: f.type,
                             amount: "₹" + parseFloat(f.amount).toLocaleString(),
                             description: f.description,
-                            date: f.date,
+                            date: formattedDateStr,
                             collector: f.collector,
                             status: f.status,
                             current_paid: "₹" + (f.currentPaidAmount ? parseFloat(f.currentPaidAmount).toLocaleString() : "0"),
