@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="lib2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/apache-tomcat-9.0.100/lib/catalina-ha.jar!/" />
+      <root url="jar://$PROJECT_DIR$/apache-tomcat-9.0.100/lib/annotations-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/apache-tomcat-9.0.100/lib/catalina-ssi.jar!/" />
+      <root url="jar://$PROJECT_DIR$/apache-tomcat-9.0.100/lib/catalina-storeconfig.jar!/" />
+      <root url="jar://$PROJECT_DIR$/apache-tomcat-9.0.100/lib/catalina-ant.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

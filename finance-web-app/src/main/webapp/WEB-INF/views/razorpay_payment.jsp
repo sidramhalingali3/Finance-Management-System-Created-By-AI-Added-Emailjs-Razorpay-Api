@@ -33,7 +33,14 @@
     font-family: 'Outfit', sans-serif;
 }
 
+html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
 body {
+    -webkit-overflow-scrolling: touch;
+    touch-action: manipulation;
     background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0f172a 60%, #020617 100%);
     background-attachment: fixed;
     color: var(--text-main);
@@ -42,7 +49,7 @@ body {
     flex-direction: column;
     align-items: center;
     position: relative;
-    padding-bottom: 3rem;
+    overflow-x: hidden;
 }
 
 .container {
@@ -308,9 +315,41 @@ body {
 }
 
 @media screen and (max-width: 640px) {
-    .container { padding: 1.5rem; }
+    ::-webkit-scrollbar {
+        display: none !important;
+        width: 0px !important;
+        height: 0px !important;
+    }
+    html, body, * {
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+    }
+    html, body {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #f8fafc !important;
+        overflow-x: hidden !important;
+    }
+    .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 1.25rem 1rem !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        background: #ffffff !important;
+        box-sizing: border-box !important;
+        min-height: 100vh;
+    }
     .form-row { grid-template-columns: 1fr; }
     .amount-presets { grid-template-columns: repeat(2, 1fr); }
+    .receipt-row .value {
+        word-break: break-all;
+        overflow-wrap: anywhere;
+    }
 }
 </style>
 </head>

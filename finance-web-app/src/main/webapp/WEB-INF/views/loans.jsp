@@ -32,7 +32,14 @@
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
+html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
 body {
+    -webkit-overflow-scrolling: touch;
+    touch-action: manipulation;
     background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0f172a 60%, #020617 100%);
     background-attachment: fixed;
     color: var(--text-main);
@@ -376,16 +383,39 @@ tbody tr:hover td {
 }
 
 @media screen and (max-width: 768px) {
+    ::-webkit-scrollbar {
+        display: none !important;
+        width: 0px !important;
+        height: 0px !important;
+    }
+    html, body, * {
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+    }
+    html, body {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #f8fafc !important;
+        overflow-x: hidden !important;
+    }
     .container {
-        width: 95%;
-        padding: 2rem 1.5rem;
-        margin: 1rem auto;
-        border-radius: 20px;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 1.25rem 1rem !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        background: #ffffff !important;
+        box-sizing: border-box !important;
+        min-height: 100vh;
     }
     .header-actions {
         flex-direction: column;
         align-items: flex-start;
-        gap: 1.5rem;
+        gap: 1.25rem;
     }
     .header-actions > div:last-child {
         width: 100%;
@@ -394,17 +424,22 @@ tbody tr:hover td {
     .header-actions .btn {
         width: 100%;
         margin-right: 0 !important;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.6rem;
     }
     
     .table-responsive {
         border: none;
         box-shadow: none;
         background: transparent;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
     }
     
     table, thead, tbody, th, td, tr {
         display: block;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
     
     thead tr {
@@ -414,35 +449,48 @@ tbody tr:hover td {
     }
     
     tr {
-        margin-bottom: 1.5rem;
-        border: 1px solid rgba(0,0,0,0.08);
+        margin-bottom: 1.25rem;
+        border: 1px solid rgba(226, 232, 240, 0.9);
         border-radius: 16px;
         background: #ffffff !important;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.08);
         overflow: hidden;
+        width: 100% !important;
     }
     
     td {
         border: none;
         border-bottom: 1px solid #f1f5f9;
         position: relative;
-        padding-left: 50%;
+        padding: 0.75rem 0.6rem 0.75rem 42% !important;
         text-align: right;
+        font-size: 0.88rem;
+        white-space: normal !important;
+        word-break: break-all !important;
+        overflow-wrap: anywhere !important;
     }
     
     td::before {
         position: absolute;
-        top: 1.25rem;
-        left: 1.25rem;
-        width: 40%;
-        padding-right: 10px;
-        white-space: nowrap;
+        top: 0.75rem;
+        left: 0.6rem;
+        width: 38%;
+        padding-right: 5px;
+        white-space: normal !important;
+        word-break: break-word !important;
         text-align: left;
-        font-weight: 600;
-        color: var(--text-muted);
+        font-weight: 700;
+        color: #475569;
         content: attr(data-label);
         font-size: 0.75rem;
         text-transform: uppercase;
+        letter-spacing: 0.02em;
+    }
+    
+    .pagination-container {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
     }
 }
 </style>

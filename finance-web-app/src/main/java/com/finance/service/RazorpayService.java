@@ -29,8 +29,8 @@ import java.util.UUID;
 @Service
 public class RazorpayService {
 
-    private final String keyId = System.getenv("RAZORPAY_KEY_ID") != null ? System.getenv("RAZORPAY_KEY_ID") : "rzp_live_TGstpCaaYvxTDr";
-    private final String keySecret = System.getenv("RAZORPAY_KEY_SECRET") != null ? System.getenv("RAZORPAY_KEY_SECRET") : "pjdOzx1E0HJmuelLI5znf20D";
+    private final String keyId = System.getenv("RAZORPAY_KEY_ID") != null ? System.getenv("RAZORPAY_KEY_ID") : "rzp_test_THnWkjqsWRSOO3";
+    private final String keySecret = System.getenv("RAZORPAY_KEY_SECRET") != null ? System.getenv("RAZORPAY_KEY_SECRET") : "7ZDrvkqreGS7HiCCmJGLa1K8";
     private final String currency = "INR";
 
     @Autowired

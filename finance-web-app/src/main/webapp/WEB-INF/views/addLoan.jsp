@@ -357,11 +357,34 @@ tbody tr:hover td {
 }
 
 @media screen and (max-width: 768px) {
+    ::-webkit-scrollbar {
+        display: none !important;
+        width: 0px !important;
+        height: 0px !important;
+    }
+    html, body, * {
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+    }
+    html, body {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #f8fafc !important;
+        overflow-x: hidden !important;
+    }
     .container {
-        width: 95%;
-        padding: 2rem 1.5rem;
-        margin: 1rem auto;
-        border-radius: 20px;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 1.5rem 1rem !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        background: #ffffff !important;
+        box-sizing: border-box !important;
+        min-height: 100vh;
     }
     .header-actions {
         flex-direction: column;
